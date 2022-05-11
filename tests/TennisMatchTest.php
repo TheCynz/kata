@@ -35,6 +35,8 @@ class TennisMatchTest extends TestCase
             [3,3,'deuce'],
             [4,4,'deuce'],
             [5,5,'deuce'],
+            [4, 3, 'Advantage: Player 1'],
+            [3,4, 'Advantage: Player 2'],
             [6,6,'deuce'],
             [7,7,'deuce'],
             [4,0,'Winner: Player 1'],
