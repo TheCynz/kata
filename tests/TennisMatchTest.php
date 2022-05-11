@@ -17,7 +17,7 @@ class TennisMatchTest extends TestCase
             $jane = new TennisMatchplayer('Jane'),
         );
 
-        
+
 
         for ($i = 0; $i < $playerOnePoints; $i++) {
             $john->score();
