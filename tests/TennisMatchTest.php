@@ -36,6 +36,7 @@ class TennisMatchTest extends TestCase
             [4,4,'deuce'],
             [5,5,'deuce'],            [6,6,'deuce'],
             [7,7,'deuce'],
+            [8,8,'deuce'],
             [4,0,'Winner: Player 1'],
             [0,4,'Winner: Player 2']
         ];
