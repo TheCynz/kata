@@ -1,47 +1,51 @@
 <?php
 
+use App\TennisMatchplayer;
 use App\TennisMatch;
 use PHPUnit\Framework\TestCase;
 
 class TennisMatchTest extends TestCase
 {
-    /** @test
+    /**
+     * @test
      * @dataProvider scores
      */
-
     function it_scores_a_tennis_match($playerOnePoints, $playerTwoPoints, $score)
     {
-        $match = new TennisMatch();
+        $match = new TennisMatch(
+            $john = new TennisMatchplayer('John'),
+            $jane = new TennisMatchplayer('Jane'),
+        );
+
+
 
         for ($i = 0; $i < $playerOnePoints; $i++) {
-            $match->pointToPlayerOne();
+            $john->score();
         }
 
         for ($i = 0; $i < $playerTwoPoints; $i++) {
-            $match->pointToPlayerTwo();
+            $jane->score();
         }
+
         $this->assertEquals($score, $match->score());
     }
 
     public function scores()
     {
         return [
-            [0,0,'love-love'],
-            [1,0,'fifteen-love'],
-            [1,1,'fifteen-fifteen'],
-            [2,0,'thirty-love'],
-            [3,0,'forty-love'],
-            [2,2,'thirty-thirty'],
-            [3,3,'deuce'],
-            [4,4,'deuce'],
-            [5,5,'deuce'],
-            [4, 3, 'Advantage: Player 1'],
-            [3,4, 'Advantage: Player 2'],
-            [6,6,'deuce'],
-            [7,7,'deuce'],
-            [8,8,'deuce'],
-            [4,0,'Winner: Player 1'],
-            [0,4,'Winner: Player 2']
+            [0, 0, 'love-love'],
+            [1, 0, 'fifteen-love'],
+            [1, 1, 'fifteen-fifteen'],
+            [2, 0, 'thirty-love'],
+            [3, 0, 'forty-love'],
+            [2, 2, 'thirty-thirty'],
+            [3, 3, 'deuce'],
+            [4, 4, 'deuce'],
+            [5, 5, 'deuce'],
+            [4, 3, 'Advantage: John'],
+            [3, 4, 'Advantage: Jane'],
+            [4, 0, 'Winner: John'],
+            [0, 4, 'Winner: Jane'],
         ];
     }
 }

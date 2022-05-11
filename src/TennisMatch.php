@@ -4,108 +4,115 @@ namespace App;
 
 class TennisMatch
 {
-    protected $playerOnePoints = 0;
-    protected $playerTwoPoints = 0;
+    /**
+     * @var TennisMatchplayer
+     */
+    protected TennisMatchplayer $playerOne;
 
+    /**
+     * @var TennisMatchplayer
+     */
+    protected TennisMatchplayer $playerTwo;
 
+    /**
+     * Create a new TennisMatch.
+     *
+     * @param  TennisMatchplayer  $playerOne
+     * @param  TennisMatchplayer  $playerTwo
+     */
+    public function __construct(TennisMatchplayer $playerOne, TennisMatchplayer $playerTwo)
+    {
+        $this->playerOne = $playerOne;
+        $this->playerTwo = $playerTwo;
+    }
 
-    public function score()
+    /**
+     * Score the match.
+     *
+     * @return string
+     */
+    public function score(): string
     {
         if ($this->hasWinner()) {
-            return 'Winner: ' . $this->leader();
+            return 'Winner: ' . $this->leader()->name;
         }
 
-        if ($this->hasAdvantage()){
-            return 'Advantage: ' . $this->leader();
+        if ($this->hasAdvantage()) {
+            return 'Advantage: ' . $this->leader()->name;
         }
 
-        //check for deuce
         if ($this->isDeuce()) {
             return 'deuce';
         }
 
-        // def
         return sprintf(
             "%s-%s",
-            $this->pointsToTerm($this->playerOnePoints),
-            $this->pointsToTerm($this->playerTwoPoints),
+            $this->playerOne->toTerm(),
+            $this->playerTwo->toTerm(),
         );
     }
 
-
-
-    public function pointToPlayerOne()
+    /**
+     * Get the current leader of the set.
+     *
+     * @return TennisMatchplayer
+     */
+    protected function leader(): TennisMatchplayer
     {
-        $this->playerOnePoints++;
-    }
-
-    public function pointToPlayerTwo()
-    {
-        $this->playerTwoPoints++;
-    }
-
-    public function pointsToTerm($points)
-    {
-        switch ($points) {
-            case 0:
-                return 'love';
-            case 1:
-                return 'fifteen';
-            case 2:
-                return 'thirty';
-            case 3:
-                return 'forty';
-        }
+        return $this->playerOne->points > $this->playerTwo->points
+            ? $this->playerOne
+            : $this->playerTwo;
     }
 
     /**
+     * Determine if the players are in deuce.
+     *
      * @return bool
      */
-    public function hasWinner(): bool
+    protected function isDeuce(): bool
     {
-        if ($this->playerOnePoints > 3 && ($this->playerOnePoints >= $this->playerTwoPoints + 2)) {
-            return true;
+        if (! $this->hasReachedDeuceThreshold()) {
+            return false;
         }
 
-        if ($this->playerTwoPoints > 3 && ($this->playerTwoPoints >= $this->playerOnePoints + 2)) {
-            return true;
-        }
-
-        return false;
+        return $this->playerOne->points === $this->playerTwo->points;
     }
 
     /**
-     * @return string
-     */
-    public function leader(): string
-    {
-        return $this->playerOnePoints > $this->playerTwoPoints
-            ? 'Player 1'
-            : 'Player 2';
-    }
-
-    /**
+     * Determine if both players have scored at least 3 points.
+     *
      * @return bool
      */
-    public function isDeuce(): bool
+    protected function hasReachedDeuceThreshold(): bool
     {
-        return $this->playerOnePoints >= 3 && $this->playerTwoPoints >= 3 && $this->playerOnePoints === $this->playerTwoPoints;
+        return $this->playerOne->points >= 3 && $this->playerTwo->points >= 3;
     }
 
-
     /**
+     * Determine if one player has the advantage.
+     *
      * @return bool
      */
-    public function hasAdvantage(): bool
+    protected function hasAdvantage(): bool
     {
-        if ($this->playerOnePoints >= 3 && $this->playerTwoPoints >=3 && $this->playerOnePoints > $this->playerTwoPoints) {
-            return true;
+        if (! $this->hasReachedDeuceThreshold()) {
+            return false;
         }
 
-        if ($this->playerTwoPoints >= 3 && $this->playerOnePoints >=3 && $this->playerTwoPoints > $this->playerOnePoints)  {
-            return true;
+        return ! $this->isDeuce();
+    }
+
+    /**
+     * Determine if there is a winner.
+     *
+     * @return bool
+     */
+    protected function hasWinner(): bool
+    {
+        if ($this->playerOne->points < 4 && $this->playerTwo->points < 4) {
+            return false;
         }
 
-        return false;
+        return abs($this->playerOne->points - $this->playerTwo->points) >= 2;
     }
 }
